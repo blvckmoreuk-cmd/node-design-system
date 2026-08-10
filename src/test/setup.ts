@@ -14,3 +14,15 @@ if (!window.matchMedia) {
     dispatchEvent: () => false,
   }) as unknown as MediaQueryList;
 }
+
+// jsdom does not implement ResizeObserver — stub it so components that
+// observe their container (Visualiser) don't crash. Tests that need real
+// resize behavior mock 'three' entirely, so this stub is never asked to do
+// anything but exist.
+if (!window.ResizeObserver) {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}
